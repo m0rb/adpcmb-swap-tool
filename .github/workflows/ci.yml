@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            cc: gcc
+            cxx: g++
+            name: linux-gcc
+          - os: ubuntu-latest
+            cc: clang
+            cxx: clang++
+            name: linux-clang
+          - os: macos-latest
+            cc: clang
+            cxx: clang++
+            name: macos
+          - os: windows-latest
+            cc: cl
+            cxx: cl
+            name: windows
+
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.name }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+        env:
+          CC: ${{ matrix.cc }}
+          CXX: ${{ matrix.cxx }}
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: adpcmb-swap-${{ matrix.name }}
+          path: |
+            build/adpcmb-swap
+            build/adpcmb-swap.exe
+            build/Release/adpcmb-swap.exe
+          if-no-files-found: warn

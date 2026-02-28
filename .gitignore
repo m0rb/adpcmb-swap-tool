@@ -1,0 +1,15 @@
+# Build
+build/
+cmake-build-*/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+
+# Binaries
+*.o
+*.obj
+*.exe
