@@ -115,7 +115,7 @@ thus preventing re-entry (important for routines with busy-wait loops).
   Comprehensive Z80 instruction set reference
 - [MAME](https://github.com/mamedev/mame) -- Reference implementation of
   YM2610 emulation and Neo Geo hardware; used for testing
-- [Backbit Platinum Cartridge for MVS] (https://www.backbit.io/) --
+- [Backbit Platinum Cartridge for MVS](https://www.backbit.io/) --
 | An amazing dev-friendly flashcart used for testing.
 
 ## License
