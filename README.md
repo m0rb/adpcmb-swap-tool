@@ -1,28 +1,25 @@
 # adpcmb-swap-tool
 
-Patches Neo Geo M1 (Z80 sound driver) ROMs to fix the ADPCM-B stereo channel
-swap on the MV1C motherboard.
+Patches Neo Geo sound drivers (M ROMs) to swap ADPCM-B stereo channels.
 
 ## The Problem
 
 The Neo Geo MV1C board has the YM2610 ADPCM-B left and right output pins
-swapped compared to earlier boards (MV1, MV1F, etc.). Games that use ADPCM-B
-for mono-panned sound effects write pan values with L/R bits that are correct
-for the original hardware but produce reversed stereo on the MV1C. 
+swapped. Games that use ADPCM-B for mono-panned sound effects write pan 
+values with L/R bits that are correct for MV1, MV1F, and so on, but 
+produce reversed stereo on the MV1C. 
 
 YM2610 register `0x11` controls ADPCM-B panning:
 - Bit 7: Left channel enable
 - Bit 6: Right channel enable
 
-On the MV1C, these are physically reversed.
-
 ## The Fix
 
 This tool finds the YM2610 "pair-A write" subroutine in the Z80 sound driver
-ROM and injects a small patch that swaps bits 6 and 7 of the data byte
+(M ROM) and injects a small patch that swaps bits 6 and 7 of the data byte
 whenever register `0x11` is being written. The patcher:
 
-1. **Scans** the ROM using Z80 disassembly to locate the YM2610 write routine
+1. **Scans** the ROM after Z80 disassembling to locate the YM2610 write routine
    (handles both `OUT (n),A` and `OUT (C),r` I/O styles)
 2. **Finds free space** (0xFF or 0x00 fill regions) in the ROM
 3. **Injects** a 20-byte preamble + relocated copy of the original routine
@@ -59,9 +56,9 @@ adpcmb-swap disasm <rom> [start [end]]
   patched ROM. Creates a `.bak` backup by default.
 - **analyze** -- Find the YM write routine and report free space without
   modifying the ROM.
-- **disasm** -- Disassemble an M1 ROM (full or address range).
+- **disasm** -- Disassemble an M ROM (full or address range).
 
-Supports both raw M1 ROM binaries and MAME ZIP romsets.
+Supports both ROM binaries and zipped MAME romsets.
 
 ### Examples
 
@@ -116,7 +113,7 @@ thus preventing re-entry (important for routines with busy-wait loops).
 - [MAME](https://github.com/mamedev/mame) -- Reference implementation of
   YM2610 emulation and Neo Geo hardware; used for testing
 - [Backbit Platinum Cartridge for MVS](https://www.backbit.io/) --
-| An amazing dev-friendly flashcart used for testing.
+  An amazing dev-friendly flashcart used for testing.
 
 ## License
 
